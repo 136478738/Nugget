@@ -2,7 +2,7 @@
   <img src="https://socialify.git.ci/136478738/Nugget/image?description=1&descriptionEditable=ALLG%E6%B1%89%E5%8C%96&font=Bitter&forks=1&issues=1&language=1&name=1&owner=1&pattern=Floating%20Cogs&pulls=1&stargazers=1&theme=Auto" alt="SparseBox"/> 
 </p>
 
-<br>汉化版本SparseBox下载地址：<a href="https://nightly.link/136478738/Nugget/workflows/Build/main/artifact.zip"><img src="https://nightly.link/logo.svg" alt style="width: 20px;" /></a> [nightly.link](https://nightly.link/136478738/Nugget/workflows/Build/main/artifact.zip)
+<br>汉化版本Nugget下载地址：<a href="https://nightly.link/136478738/Nugget/workflows/Build/main/artifact.zip"><img src="https://nightly.link/logo.svg" alt style="width: 20px;" /></a> [nightly.link](https://nightly.link/136478738/Nugget/workflows/Build/main/artifact.zip)
 
 # Nugget
 Unlock your device's full potential!
