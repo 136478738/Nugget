@@ -20,7 +20,7 @@ from Sparserestore.restore import restore_files, FileToRestore
 def show_error_msg(txt: str, detailed_txt: str = None):
     detailsBox = QMessageBox()
     detailsBox.setIcon(QMessageBox.Critical)
-    detailsBox.setWindowTitle("Error!")
+    detailsBox.setWindowTitle("错误!")
     detailsBox.setText(txt)
     if detailed_txt != None:
         detailsBox.setDetailedText(detailed_txt)
@@ -28,20 +28,20 @@ def show_error_msg(txt: str, detailed_txt: str = None):
 
 def show_apply_error(e: Exception, update_label=lambda x: None):
     if "Find My" in str(e):
-        show_error_msg("Find My must be disabled in order to use this tool.",
-                       detailed_txt="Disable Find My from Settings (Settings -> [Your Name] -> Find My) and then try again.")
+        show_error_msg("为了使用此工具，必须禁用“查找”。",
+                       detailed_txt="从设置中禁用“查找我的”（设置 -> [您的姓名] -> 查找我的），然后重试。")
     elif "Encrypted Backup MDM" in str(e):
-        show_error_msg("Nugget cannot be used on this device. Click Show Details for more info.",
-                       detailed_txt="Your device is managed and MDM backup encryption is on. This must be turned off in order for Nugget to work. Please do not use Nugget on your school/work device!")
+        show_error_msg("Nugget 无法在此设备上使用。点击“显示详细信息”可了解更多信息。",
+                       detailed_txt="您的设备已受管理，并且 MDM 备份加密已开启。必须关闭此功能才能使 Nugget 正常工作。请不要在您的学校/工作设备上使用 Nugget！")
     elif "SessionInactive" in str(e):
-        show_error_msg("The session was terminated. Refresh the device list and try again.")
+        show_error_msg("会话已终止。请刷新设备列表并重试。")
     elif isinstance(e, PasswordRequiredError):
-        show_error_msg("Device is password protected! You must trust the computer on your device.",
-                       detailed_txt="Unlock your device. On the popup, click \"Trust\", enter your password, then try again.")
+        show_error_msg("设备受密码保护！您必须信任设备上的计算机。",
+                       detailed_txt="解锁您的设备。在弹出的窗口中，点击“信任”，输入您的密码，然后重试。")
     else:
         show_error_msg(type(e).__name__ + ": " + repr(e), detailed_txt=str(traceback.format_exc()))
     print(traceback.format_exc())
-    update_label("Failed to restore")
+    update_label("恢复失败")
 
 class DeviceManager:
     ## Class Functions
@@ -68,10 +68,10 @@ class DeviceManager:
         except:
             show_error_msg(
                 """
-                Failed to get device list. Click \"Show Details\" for the traceback.
+                无法获取设备列表。单击“显示详细信息”查看回溯。
 
-                If you are on Windows, make sure you have the \"Apple Devices\" app from the Microsoft Store or iTunes from Apple's website.
-                If you are on Linux, make sure you have usbmuxd and libimobiledevice installed.
+                如果您使用的是 Windows，请确保您拥有来自 Microsoft Store 的iTunes应用程序或来自 Apple 网站的 iTunes。
+                如果您使用的是 Linux，请确保已安装 usbmuxd 和 libimobiledevice。
                 """, detailed_txt=str(traceback.format_exc())
             )
             self.set_current_device(index=None)
@@ -157,7 +157,7 @@ class DeviceManager:
         
     def get_current_device_name(self) -> str:
         if self.data_singleton.current_device == None:
-            return "No Device"
+            return "未连接设备"
         else:
             return self.data_singleton.current_device.name
         
@@ -205,7 +205,7 @@ class DeviceManager:
         self.data_singleton.current_device.ld.unpair()
         # next, pair it again
         self.data_singleton.current_device.ld.pair()
-        QMessageBox.information(None, "Pairing Reset", "Your device's pairing was successfully reset. Refresh the device list before applying.")
+        QMessageBox.information(None, "配对重置", "您的设备配对已成功重置。请刷新设备列表后再应用。")
         
 
     def add_skip_setup(self, files_to_restore: list[FileToRestore], restoring_domains: bool):
@@ -287,7 +287,7 @@ class DeviceManager:
     def apply_changes(self, resetting: bool = False, update_label=lambda x: None):
         # set the tweaks and apply
         # first open the file in read mode
-        update_label("Applying changes to files...")
+        update_label("正在将更改应用于文件...")
         gestalt_plist = None
         if self.data_singleton.gestalt_path != None:
             with open(self.data_singleton.gestalt_path, 'rb') as in_fp:
@@ -325,8 +325,8 @@ class DeviceManager:
                         gestalt_plist = tweak.apply_tweak(gestalt_plist)
                     elif tweak.enabled:
                         # no mobilegestalt file provided but applying mga tweaks, give warning
-                        show_error_msg("No mobilegestalt file provided! Please select your file to apply mobilegestalt tweaks.")
-                        update_label("Failed.")
+                        show_error_msg("未提供 mobilegestalt 文件！请选择您的文件以应用 mobilegestalt 调整。")
+                        update_label("失败")
                         return
             # set the custom gestalt keys
             if gestalt_plist != None:
@@ -339,7 +339,7 @@ class DeviceManager:
             gestalt_data = plistlib.dumps(gestalt_plist)
         
         # Generate backup
-        update_label("Generating backup...")
+        update_label("正在生成备份...")
         # create the restore file list
         files_to_restore: dict[FileToRestore] = [
         ]
@@ -407,21 +407,21 @@ class DeviceManager:
                     )
 
         # restore to the device
-        update_label("Restoring to device...")
+        update_label("正在恢复至设备...")
         try:
             restore_files(files=files_to_restore, reboot=self.auto_reboot, lockdown_client=self.data_singleton.current_device.ld)
             msg = "Your device will now restart."
             if not self.auto_reboot:
-                msg = "Please restart your device to see changes."
-            QMessageBox.information(None, "Success!", "All done! " + msg)
-            update_label("Success!")
+                msg = "请重新启动您的设备才能查看更改。"
+            QMessageBox.information(None, "成功！", "全部完成！" + msg)
+            update_label("成功！")
         except Exception as e:
             show_apply_error(e, update_label)
 
     ## RESETTING MOBILE GESTALT
     def reset_mobilegestalt(self, settings: QSettings, update_label=lambda x: None):
         # restore to the device
-        update_label("Restoring to device...")
+        update_label("正在恢复至设备...")
         try:
             # remove the saved device model, hardware, and cpu
             settings.setValue(self.data_singleton.current_device.uuid + "_model", "")
@@ -435,10 +435,10 @@ class DeviceManager:
                     restore_path=file_path,
                     domain=domain
                 )], reboot=self.auto_reboot, lockdown_client=self.data_singleton.current_device.ld)
-            msg = "Your device will now restart."
+            msg = "您的设备现在将重新启动。"
             if not self.auto_reboot:
-                msg = "Please restart your device to see changes."
-            QMessageBox.information(None, "Success!", "All done! " + msg)
-            update_label("Success!")
+                msg = "请重新启动您的设备才能查看更改。"
+            QMessageBox.information(None, "成功！", "全部完成！" + msg)
+            update_label("成功！")
         except Exception as e:
             show_apply_error(e)
