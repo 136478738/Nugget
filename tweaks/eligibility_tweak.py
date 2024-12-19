@@ -8,7 +8,7 @@ from pathlib import Path
 from os import path, getcwd
 
 class InvalidRegionCodeException(Exception):
-    "Region code must be exactly 2 characters long!"
+    "区域代码必须正好是 2 个字符长！"
     pass
 
 def replace_region_code(plist_path: str, original_code: str = "US", new_code: str = "US"):
@@ -23,7 +23,7 @@ def replace_region_code(plist_path: str, original_code: str = "US", new_code: st
 
 class EligibilityTweak(Tweak):
     def __init__(self):
-        super().__init__(key=None, value=["Method 1", "Method 2"])
+        super().__init__(key=None, value=["方法一", "方法二"])
         self.code = "US"
         self.method = 0 # between 0 and 1
 
@@ -45,7 +45,7 @@ class EligibilityTweak(Tweak):
         # https://github.com/Lrdsnow/EUEnabler/blob/main/app.py
         if not self.enabled:
             return None
-        print(f"Applying EU Enabler for region \'{self.code}\'...")
+        print(f"Applying EU Enabler for  \'{self.code}\'...")
         # get the plists directory
         try:
             source_dir = path.join(sys._MEIPASS, "files/eligibility")
@@ -54,7 +54,7 @@ class EligibilityTweak(Tweak):
 
         # start with eligibility.plist
         file_path = path.join(source_dir, 'eligibility.plist')
-        eligibility_data = replace_region_code(file_path, original_code="US", new_code=self.code)
+        eligibility_data = replace__code(file_path, original_code="US", new_code=self.code)
         files_to_restore = [
             FileToRestore(
                 contents=eligibility_data,
@@ -64,7 +64,7 @@ class EligibilityTweak(Tweak):
 
         # next modify config.plist
         file_path = path.join(source_dir, 'Config.plist')
-        config_data = replace_region_code(file_path, original_code="US", new_code=self.code)
+        config_data = replace__code(file_path, original_code="US", new_code=self.code)
         if self.method == 0:
             files_to_restore.append(
                 FileToRestore(
