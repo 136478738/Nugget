@@ -4,7 +4,7 @@ from .eligibility_tweak import EligibilityTweak, AITweak
 from .basic_plist_locations import FileLocation
     
 tweaks = {
-    ## MobileGestalt Tweaks
+    ## MobileGestalt Tweaks调整
     "DynamicIsland": MobileGestaltPickerTweak("oPeik/9e8lQWMszEjbPzng", subkey="ArtworkDeviceSubType", values=[2436, 2556, 2796, 2976, 2622, 2868]),
     "RdarFix": RdarFixTweak(),
     "ModelName": MobileGestaltTweak("oPeik/9e8lQWMszEjbPzng", subkey="ArtworkDeviceProductDescription", value=""),
